@@ -10,7 +10,9 @@ abstract %"
 ```
 
 ## Installation
-1. Run `go install`
+1. Clone repo
+2. Enter directory (`cd ./paper-abstract-formatter`)
+3. Run `go install`
 
 ## Applied formatting:
 - Escaping of unescaped percentage signs (`%`)
