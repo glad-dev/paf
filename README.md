@@ -10,8 +10,7 @@ abstract %"
 ```
 
 ## Installation
-1. Build the program with `go build -o paf`
-2. Copy the binary to a `bin` directory, e.g. `~/.local/bin/`
+1. Run `go install`
 
 ## Applied formatting:
 - Escaping of unescaped percentage signs (`%`)
