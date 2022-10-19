@@ -12,7 +12,10 @@ type config struct {
 }
 
 func parseFlags() (config, error) {
-	conf := config{}
+	conf := config{
+		abstract: "",
+		help:     false,
+	}
 
 	flag.BoolVar(&conf.help, "h", false, "Show help")
 

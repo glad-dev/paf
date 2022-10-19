@@ -53,7 +53,7 @@ func format(abstract string) string {
 
 			// We have to move i back since it is pointing to the first non-space character
 			// If we don't move it back, the outer for loop would skip the first non-space character
-			i -= 1
+			i--
 			letter = string(abstract[i])
 		}
 
