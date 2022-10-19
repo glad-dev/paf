@@ -7,13 +7,13 @@ import (
 )
 
 func main() {
-	abstract, err := parseFlags()
+	conf, err := parseFlags()
 	if err != nil {
-		fmt.Printf("Error: %s\n", err)
+		fmt.Printf("paf: error: %s\n", err)
 		os.Exit(1)
 	}
 
-	fmt.Print(format(abstract))
+	fmt.Print(format(conf.abstract))
 }
 
 func format(abstract string) string {
