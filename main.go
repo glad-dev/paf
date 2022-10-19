@@ -13,7 +13,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Print(format(conf.abstract))
+	out := format(conf.abstract)
+	// Append a newline if abstract does not end with one
+	if out[len(out)-1] != '\n' {
+		out += "\n"
+	}
+
+	fmt.Print(out)
 }
 
 func format(abstract string) string {
@@ -59,11 +65,6 @@ func format(abstract string) string {
 
 		previous = letter
 		out += letter
-	}
-
-	// Append a newline if abstract does not end with one
-	if out[len(out)-1] != '\n' {
-		out += "\n"
 	}
 
 	return out
