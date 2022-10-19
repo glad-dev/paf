@@ -42,6 +42,10 @@ func format(abstract string) string {
 			if i+1 < len(abstract) {
 				// We are not at the end of the string => Check if there is a newline following
 				if abstract[i+1] != '\n' {
+					// Replace single newline with a space
+					previous = " "
+					out += " "
+
 					continue
 				}
 			} else {

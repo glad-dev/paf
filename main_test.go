@@ -54,8 +54,8 @@ func TestRemoveRepeatedSpaces(t *testing.T) {
 func TestRemoveNewlineAndQuotePercentage(t *testing.T) {
 	valueMap := map[string]string{
 		"%\n":   "\\%",
-		"\\\n%": "\\%",
-		"\n\\%": "\\%",
+		"\\\n%": "\\ \\%",
+		"\n\\%": " \\%",
 		"":      "",
 	}
 
@@ -93,9 +93,9 @@ func TestQuotePercentage(t *testing.T) {
 func TestRemoveSingleNewlineButKeepDouble(t *testing.T) {
 	valueMap := map[string]string{
 		"A\n\nB":    "A\n\nB",
-		"\nA\n\nB":  "A\n\nB",
+		"\nA\n\nB":  " A\n\nB",
 		"A\n\nB\n":  "A\n\nB",
-		"A\n\nB\nC": "A\n\nBC",
+		"A\n\nB\nC": "A\n\nB C",
 	}
 
 	for got, want := range valueMap {
@@ -117,7 +117,11 @@ func TestRemoveSingleNewline(t *testing.T) {
 	}
 
 	for _, val := range inputs {
-		wanted := strings.ReplaceAll(val, "\n", "")
+		// Replace newlines with spaces
+		wanted := strings.ReplaceAll(val, "\n", " ")
+		// Remove trailing space
+		wanted = strings.TrimSuffix(wanted, " ")
+
 		got := format(val)
 
 		if wanted != got {
