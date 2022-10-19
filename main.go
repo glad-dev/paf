@@ -22,7 +22,7 @@ func main() {
 	fmt.Print(out)
 }
 
-func format(abstract string) string {
+func format(abstract string) string { //nolint:gocognit
 	out := ""
 	previous := ""
 
@@ -42,7 +42,11 @@ func format(abstract string) string {
 			if i+1 < len(abstract) {
 				// We are not at the end of the string => Check if there is a newline following
 				if abstract[i+1] != '\n' {
-					// Replace single newline with a space
+					// Replace single newline with a space except when previous char is a space
+					if previous == " " {
+						continue
+					}
+
 					previous = " "
 					out += " "
 
@@ -65,6 +69,12 @@ func format(abstract string) string {
 			// If we don't move it back, the outer for loop would skip the first non-space character
 			i--
 			letter = string(abstract[i])
+
+			// If the previous letter and the current letter is a space, we do not want to add another space.
+			// This case should only happen when a newline and a single space are combined.
+			if previous == " " && letter == " " {
+				continue
+			}
 		}
 
 		previous = letter

@@ -70,4 +70,4 @@ issues:
     exclude:
         - "do not define dynamic errors, use wrapped static errors instead"
         - "variable name 'i' is too short for the scope of its usage"
-
+        - "if letter == \"\n\" && previous != \"\n\"` has complex nested blocks"

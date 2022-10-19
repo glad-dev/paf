@@ -40,6 +40,11 @@ func TestRemoveRepeatedSpaces(t *testing.T) {
 		" A B": " A B",
 		// Single space at the beginning and end
 		" A B ": " A B ",
+		// Single newline (which should be replaced with a space) and a single space
+		" \nA":  " A",
+		"A\n ":  "A ",
+		"A\n B": "A B",
+		"A \nB": "A B",
 	}
 
 	for got, want := range valueMap {
