@@ -36,8 +36,8 @@ func format(abstract string) string { //nolint:gocognit
 			if i+1 < len(abstract) {
 				// We are not at the end of the string => Check if there is a newline following
 				if abstract[i+1] != '\n' {
-					// Replace single newline with a space except when previous char is a space
-					if previous == " " {
+					// Replace single newline with a space except when previous char is a space or next char is "-"
+					if previous == " " || previous == "-" {
 						continue
 					}
 

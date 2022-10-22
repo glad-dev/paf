@@ -45,6 +45,8 @@ func TestRemoveRepeatedSpaces(t *testing.T) {
 		"A\n ":  "A ",
 		"A\n B": "A B",
 		"A \nB": "A B",
+		// Single newline should not break hyphenation
+		"A-\nB": "A-B",
 	}
 
 	for got, want := range valueMap {
@@ -101,6 +103,7 @@ func TestRemoveSingleNewlineButKeepDouble(t *testing.T) {
 		"\nA\n\nB":  " A\n\nB",
 		"A\n\nB\n":  "A\n\nB",
 		"A\n\nB\nC": "A\n\nB C",
+		"A\n\n-B":   "A\n\n-B",
 	}
 
 	for got, want := range valueMap {
