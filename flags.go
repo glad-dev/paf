@@ -6,13 +6,15 @@ import (
 	"os"
 )
 
+const version = "0.2.1"
+
 type config struct {
 	abstract string
 	help     bool
 	version  bool
 }
 
-func parseFlags() (config, error) {
+func parseFlags() config {
 	conf := config{
 		abstract: "",
 		help:     false,
@@ -29,19 +31,23 @@ func parseFlags() (config, error) {
 		showHelp()
 		os.Exit(0)
 	} else if conf.version {
-		fmt.Println("paf 0.2")
+		fmt.Printf("paf %s\n", version)
 		os.Exit(0)
 	}
 
 	if len(args) == 0 {
-		return config{}, fmt.Errorf("no argument passed")
+		fmt.Println("paf: error: no argument passed")
+		showHelp()
+		os.Exit(1)
 	} else if len(args) > 1 {
-		return config{}, fmt.Errorf("too many arguments passed")
+		fmt.Println("paf: error: too many argument passed")
+		showHelp()
+		os.Exit(1)
 	}
 
 	conf.abstract = args[0]
 
-	return conf, nil
+	return conf
 }
 
 func showHelp() {

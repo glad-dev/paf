@@ -2,18 +2,11 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strings"
 )
 
 func main() {
-	conf, err := parseFlags()
-	if err != nil {
-		fmt.Printf("paf: error: %s\n", err)
-		showHelp()
-		os.Exit(1)
-	}
-
+	conf := parseFlags()
 	out := format(conf.abstract)
 	// Append a newline if abstract does not end with one
 	if out[len(out)-1] != '\n' {
