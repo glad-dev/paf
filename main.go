@@ -10,6 +10,7 @@ func main() {
 	conf, err := parseFlags()
 	if err != nil {
 		fmt.Printf("paf: error: %s\n", err)
+		showHelp()
 		os.Exit(1)
 	}
 

@@ -1,0 +1,84 @@
+#!/bin/bash
+
+STAGED_GO_FILES=$(git diff --staged --name-only | grep "\.go$")
+
+
+if [[ "$STAGED_GO_FILES" = "" ]]; then
+	echo "No go files were added to the commit"
+	exit 0
+fi
+
+# Save all unstaged changes
+git stash save --keep-index > /dev/null 2>&1
+
+for FILE in $STAGED_GO_FILES
+do
+	# Clean up code
+	go fmt "$FILE"
+
+	# Commit any changes
+	git add "$FILE"
+done
+
+PASS=true
+
+printf "Running go vet: "
+VET=$(go vet 2>&1)
+if [ $? -ne 0 ]; then
+	PASS=false
+	printf "\033[0;31mVet failed\033[0m\n"
+	echo "$VET"
+	echo
+else
+	printf "\033[0;32mVet passed\033[0m\n"
+fi
+
+printf "Building application: "
+BUILD=$(go build -o "paf" . 2>&1)
+if [ $? -ne 0 ]; then
+	PASS=false
+	printf "\033[0;31mBuild failed\033[0m\n"
+	echo "$BUILD"
+	echo
+else
+	printf "\033[0;32mBuild successful\033[0m\n"
+	# Delete executables
+	rm "paf"
+fi
+
+printf "Running tests: "
+TEST=$(go test . 2>&1)
+if [ $? -ne 0 ]; then
+	PASS=false
+	printf "\033[0;31mTests failed\033[0m\n"
+	echo "$TEST"
+	echo
+else
+	printf "\033[0;32mTests passed\033[0m\n"
+fi
+
+printf "Running linter: "
+LINT=$(golangci-lint run 2>&1)
+if [ $? -ne 0 ]; then
+	PASS=false
+	printf "\033[0;31mLinter found issues\033[0m\n"
+	echo "$LINT"
+	echo
+else
+	printf "\033[0;32mNo issues found\033[0m\n"
+fi
+
+# Restore unstaged changes
+git stash pop
+if [ $? -ne 0 ]; then
+	echo "git stash pop failed!"
+fi
+
+echo
+if ! $PASS; then
+	printf "Commit \033[0;31mfailed\033[0m\n"
+	exit 1
+fi
+
+printf "Commit \033[0;32mpassed\033[0m\n"
+exit 0
