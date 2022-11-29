@@ -1,3 +1,3 @@
-module github.com/glad-dev/paper-abstract-formatter
+module github.com/glad-dev/paf
 
 go 1.19

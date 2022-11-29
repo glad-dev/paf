@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-const version = "0.2.3"
+const version = "0.2.4"
 
 type config struct {
 	abstract       string
@@ -78,7 +78,7 @@ func checkForUpdate() {
 	fmt.Println("Checking for updates")
 
 	// Since we do not need any custom headers, we can use http.Get instead of http.NewRequest
-	res, err := http.Get("https://api.github.com/repos/glad-dev/paper-abstract-formatter/tags") //nolint: noctx
+	res, err := http.Get("https://api.github.com/repos/glad-dev/paf/tags") //nolint: noctx
 	if err != nil {
 		fmt.Printf("Could not connect to the server: %s\n", err)
 		os.Exit(1)
@@ -118,7 +118,7 @@ func checkForUpdate() {
 			} else {
 				fmt.Println("The program is out of date")
 				fmt.Printf("You are using version %s, while the lastes version is %s\n", version, elem.Name[1:])
-				fmt.Println("Run 'go install github.com/glad-dev/paper-abstract-formatter'")
+				fmt.Println("Run 'go install github.com/glad-dev/paf@latest'")
 			}
 
 			os.Exit(0)
@@ -127,6 +127,6 @@ func checkForUpdate() {
 
 	// No tag starts with "v"
 	fmt.Println("No version tag was found.")
-	fmt.Println("Please file an issue at https://github.com/glad-dev/paper-abstract-formatter")
+	fmt.Println("Please file an issue at https://github.com/glad-dev/paf")
 	os.Exit(1)
 }
