@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-const version = "0.2.2"
+const version = "0.2.3"
 
 type config struct {
 	abstract       string
@@ -66,7 +66,7 @@ func showHelp() {
 	fmt.Println("Optional parameter:")
 	fmt.Println("  -h\tDisplays this help message and exits")
 	fmt.Println("  -v\tDisplays program's version number and exists")
-	fmt.Println("  -v\tChecks if there is a newer version available")
+	fmt.Println("  -u\tChecks if there is a newer version available")
 }
 
 func checkForUpdate() {
@@ -107,8 +107,6 @@ func checkForUpdate() {
 		os.Exit(1)
 	}
 
-	// Not checking whether there are tags that start with 'v' since there are, at the time of writing, two version tags.
-	// Thus, the loop will always terminate with either "Up to date" or "Out of date".
 	// The loop implicitly relies on the latest tag being listed first.
 	for _, elem := range responseStructArray {
 		if strings.HasPrefix(elem.Name, "v") { //nolint: wsl
@@ -120,10 +118,15 @@ func checkForUpdate() {
 			} else {
 				fmt.Println("The program is out of date")
 				fmt.Printf("You are using version %s, while the lastes version is %s\n", version, elem.Name[1:])
-				fmt.Println("Clone the repo and run 'go install'")
+				fmt.Println("Run 'go install github.com/glad-dev/paper-abstract-formatter'")
 			}
 
-			break
+			os.Exit(0)
 		}
 	}
+
+	// No tag starts with "v"
+	fmt.Println("No version tag was found.")
+	fmt.Println("Please file an issue at https://github.com/glad-dev/paper-abstract-formatter")
+	os.Exit(1)
 }
