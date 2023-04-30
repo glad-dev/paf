@@ -1,59 +1,58 @@
 package main
 
 import (
-	"strings"
 	"testing"
 )
 
 func TestRemoveRepeatedSpaces(t *testing.T) {
 	valueMap := map[string]string{
 		// Single space
-		" ": " ",
+		" ": "",
 		// Only spaces
-		"     ": " ",
+		"     ": "",
 		// Tab
-		"\t": " ",
+		"\t": "",
 		// Tab and space at the end
-		"\t ": " ",
+		"\t ": "",
 		// Tab and space at the beginning
-		" \t": " ",
+		" \t": "",
 		// Tab and spaces at the end and beginning
-		" \t ": " ",
+		" \t ": "",
 		// Tab and chars
-		"A\tB":     "A B",
-		"\tA B":    " A B",
-		"\tA\tB":   " A B",
-		"A B\t":    "A B ",
-		"A\tB\t":   "A B ",
-		"\tA\tB\t": " A B ",
+		"A\tB":      "A B",
+		"\tA B":     "A B",
+		"\tA\tB":    "A B",
+		"A B\t":     "A B",
+		"A\tB\t":    "A B",
+		"\tA\tB\tC": "A B C",
 		// Spaces in the middle
 		"A      B                 C D        E": "A B C D E",
 		// Spaces at the beginning
-		"       A B": " A B",
+		"C       A B": "C A B",
 		// Spaces at the end
-		"A B              ": "A B ",
+		"A B              C": "A B C",
 		// Spaces at the beginning and end
-		"              A B              ": " A B ",
+		"A             B C             D": "A B C D",
 		// Single space at the end
-		"A B ": "A B ",
+		"A B ": "A B",
 		// Single space at the beginning
-		" A B": " A B",
+		" A B": "A B",
 		// Single space at the beginning and end
-		" A B ": " A B ",
+		" A B ": "A B",
 		// Single newline (which should be replaced with a space) and a single space
-		" \nA":  " A",
-		"A\n ":  "A ",
+		" \nA":  "A",
+		"A\n ":  "A",
 		"A\n B": "A B",
 		"A \nB": "A B",
 		// Single newline should not break hyphenation
 		"A-\nB": "A-B",
 	}
 
-	for got, want := range valueMap {
-		got = format(got)
+	for input, expected := range valueMap {
+		got := format(input)
 
-		if got != want {
-			t.Errorf("got: '%s', wanted '%s'", got, want)
+		if got != expected {
+			t.Errorf("got: '%s', wanted '%s'", got, expected)
 		}
 	}
 }
@@ -62,15 +61,15 @@ func TestRemoveNewlineAndQuotePercentage(t *testing.T) {
 	valueMap := map[string]string{
 		"%\n":   "\\%",
 		"\\\n%": "\\ \\%",
-		"\n\\%": " \\%",
+		"\n\\%": "\\%",
 		"":      "",
 	}
 
-	for got, want := range valueMap {
-		got = format(got)
+	for input, expected := range valueMap {
+		got := format(input)
 
-		if got != want {
-			t.Errorf("got: '%s', wanted '%s'", got, want)
+		if got != expected {
+			t.Errorf("got: '%s', wanted '%s'", got, expected)
 		}
 	}
 }
@@ -88,52 +87,49 @@ func TestQuotePercentage(t *testing.T) {
 		"This contains an unquoted % and quoted \\%": "This contains an unquoted \\% and quoted \\%",
 	}
 
-	for got, want := range valueMap {
-		got = format(got)
+	for input, expected := range valueMap {
+		got := format(input)
 
-		if got != want {
-			t.Errorf("got: '%s', wanted '%s'", got, want)
+		if got != expected {
+			t.Errorf("got: '%s', wanted '%s'", got, expected)
 		}
 	}
 }
 
 func TestRemoveSingleNewlineButKeepDouble(t *testing.T) {
 	valueMap := map[string]string{
-		"A\n\nB":    "A\n\nB",
-		"\nA\n\nB":  " A\n\nB",
-		"A\n\nB\n":  "A\n\nB",
-		"A\n\nB\nC": "A\n\nB C",
-		"A\n\n-B":   "A\n\n-B",
+		"A\n\nB":      "A\n\nB",
+		"\nA\n\nB":    "A\n\nB",
+		"A\n\nB\n":    "A\n\nB",
+		"A\n\nB\nC":   "A\n\nB C",
+		"A\n\n-B":     "A\n\n-B",
+		"A\n\nB\n\nC": "A\n\nB\n\nC",
+		"A\nB\n\nC":   "A B\n\nC",
 	}
 
-	for got, want := range valueMap {
-		got = format(got)
+	for input, expected := range valueMap {
+		got := format(input)
 
-		if got != want {
-			t.Errorf("got: '%s', wanted '%s'", got, want)
+		if got != expected {
+			t.Errorf("got: '%s', wanted '%s'", got, expected)
 		}
 	}
 }
 
 func TestRemoveSingleNewline(t *testing.T) {
-	inputs := []string{
-		"This\ncontains\nmany\nnewlines",
-		"\nThis started with a newline",
-		"This ends with a newline\n",
-		"\nThis starts and ends with a newline\n",
-		"\n",
+	valueMap := map[string]string{
+		"This\ncontains\nmany\nnewlines":          "This contains many newlines",
+		"\nThis started with a newline":           "This started with a newline",
+		"This ends with a newline\n":              "This ends with a newline",
+		"\nThis starts and ends with a newline\n": "This starts and ends with a newline",
+		"\n": "",
 	}
 
-	for _, val := range inputs {
-		// Replace newlines with spaces
-		wanted := strings.ReplaceAll(val, "\n", " ")
-		// Remove trailing space
-		wanted = strings.TrimSuffix(wanted, " ")
+	for input, expected := range valueMap {
+		got := format(input)
 
-		got := format(val)
-
-		if wanted != got {
-			t.Errorf("got: '%s', wanted '%s'", got, wanted)
+		if got != expected {
+			t.Errorf("got: '%s', wanted '%s'", got, expected)
 		}
 	}
 }
@@ -143,16 +139,30 @@ func TestNoChange(t *testing.T) {
 		"This line requires no modifications",
 		"This line contains an escaped percentage sign: \\%",
 		"This line contains two newlines (\n\n)",
-		"\n\nThis\n\nline\n\ncontains\n\nnewlines\n\ninstead\n\nof\n\nspaces\n\n",
-		"\n\n",
-		" ",
+		"This\n\nline\n\ncontains\n\nnewlines\n\ninstead\n\nof\n\nspaces",
 		"",
 	}
 
-	for _, got := range inputs {
-		formatted := format(got)
-		if formatted != got {
-			t.Errorf("got '%s', wanted '%s'", formatted, got)
+	for _, input := range inputs {
+		got := format(input)
+
+		if input != got {
+			t.Errorf("got '%s', wanted '%s'", got, input)
+		}
+	}
+}
+
+func TestUnicode(t *testing.T) {
+	inputs := []string{
+		"“",
+		"×",
+	}
+
+	for _, input := range inputs {
+		got := format(input)
+
+		if input != got {
+			t.Errorf("got '%s', wanted '%s'", got, input)
 		}
 	}
 }
