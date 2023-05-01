@@ -64,26 +64,19 @@ func removeSingleNewline(abstract string) string {
 func condenseSpaces(abstract string) string {
 	s := strings.Builder{}
 
-	continueAt := 0 // We can't use a for-i loop since that would break unicode chars
-	for i, letter := range abstract {
-		if i < continueAt {
-			continue
-		}
-
-		if abstract[i] == ' ' {
+	split := strings.Split(abstract, "") // Splits strings into UTF-8 chars
+	for i := 0; i < len(split); i++ {
+		if split[i] == " " {
 			// Skip all following spaces
-			for i < len(abstract) && abstract[i] == ' ' {
+			for i < len(split) && split[i] == " " {
 				i++
 			}
 
 			// Write the condensed space
-			s.WriteRune(' ')
-
-			continueAt = i
-			continue
+			s.WriteString(" ")
 		}
 
-		s.WriteRune(letter)
+		s.WriteString(split[i])
 	}
 
 	return s.String()

@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-const version = "0.3"
+const version = "0.3.1"
 
 func parseFlags() string {
 	help := flag.Bool("h", false, "Show help")
