@@ -156,6 +156,8 @@ func TestUnicode(t *testing.T) {
 	inputs := []string{
 		"“",
 		"×",
+		"🤒",
+		"♫",
 	}
 
 	for _, input := range inputs {
@@ -163,6 +165,24 @@ func TestUnicode(t *testing.T) {
 
 		if input != got {
 			t.Errorf("got '%s', wanted '%s'", got, input)
+		}
+	}
+}
+
+func TestUnicodeAndText(t *testing.T) {
+	valueMap := map[string]string{
+		"“Some quoted text“":                            "“Some quoted text“",
+		"“Quote with %":                                 "“Quote with \\%",
+		"Unicode before 圓%":                             "Unicode before 圓\\%",
+		"Unicode before spaces Ģ                     A": "Unicode before spaces Ģ A",
+		"Unicode after spaces                        Ħ": "Unicode after spaces Ħ",
+	}
+
+	for input, expected := range valueMap {
+		got := format(input)
+
+		if got != expected {
+			t.Errorf("got: '%s', wanted '%s'", got, expected)
 		}
 	}
 }
